@@ -107,9 +107,9 @@ class NCViewerFactory extends ABCWidgetFactory<NCDimensionLoaderPanel, DocumentR
       path: context.path,
       preferredLanguage: context.model.defaultKernelLanguage
     }).then(consolePanel => {
-      setTimeout( () => {
+      consolePanel.session.ready.then(() => {
         consolePanel.console.inject('print("Hello, world")');
-      }, 2000);
+      });
     });
     return ncWidget;
   }
