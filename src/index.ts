@@ -2,12 +2,20 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-  ILayoutRestorer, JupyterLab, JupyterLabPlugin
+  Widget
+} from '@phosphor/widgets';
+
+import {
+  JupyterLab, JupyterLabPlugin
 } from '@jupyterlab/application';
 
 import {
   InstanceTracker
 } from '@jupyterlab/apputils';
+
+import {
+  ABCWidgetFactory, DocumentRegistry
+} from '@jupyterlab/docregistry';
 
 /**
  * The name of the factory that creates CSV widgets.
@@ -36,13 +44,13 @@ export default plugin;
  * Activate the table widget extension.
  */
 function activate(app: JupyterLab): void {
-  const factory = new NCFactory({
+  const factory = new NCViewerFactory({
     name: FACTORY,
     fileTypes: ['nc'],
     defaultFor: ['nc'],
     readOnly: true
   });
-  const tracker = new InstanceTracker<NCFactory>({ namespace: 'nc-viewer' });
+  const tracker = new InstanceTracker<NCDimensionLoaderPanel>({ namespace: 'nc-viewer' });
 
   // Handle state restoration.
 //   restorer.restore(tracker, {
@@ -66,6 +74,31 @@ function activate(app: JupyterLab): void {
   }); 
 }
 
-class NCFactory extends DocumentRegistry.IWidgetFactory<NCDimensionLoaderPanel> {
-
+/**
+ * A widget factory for NC widgets.
+ */
+export
+class NCViewerFactory extends ABCWidgetFactory<NCDimensionLoaderPanel, DocumentRegistry.IModel> {
+  /**
+   * Create a new widget given a context.
+   */
+  protected createNewWidget(context: DocumentRegistry.Context): NCDimensionLoaderPanel {
+    return new NCDimensionLoaderPanel(context);
+  }
 }
+
+/**
+ * A widget for NC loaders.
+ */
+export
+class NCDimensionLoaderPanel extends Widget implements DocumentRegistry.IReadyWidget {
+  constructor(context: DocumentRegistry.Context) {
+    super();
+    this.context = context;
+  }
+
+  readonly context: DocumentRegistry.Context;
+
+  readonly ready =  Promise.resolve(void 0);
+}
+
