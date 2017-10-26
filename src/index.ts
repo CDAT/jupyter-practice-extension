@@ -106,12 +106,10 @@ class NCViewerFactory extends ABCWidgetFactory<NCDimensionLoaderPanel, DocumentR
       activate: true,
       path: context.path,
       preferredLanguage: context.model.defaultKernelLanguage
-    }).then(() => {
-      commands.execute('console:inject', {
-        activate: false, 
-        code: 'print("Hello, world")',
-        path: context.path
-      });
+    }).then(consolePanel => {
+      setTimeout( () => {
+        consolePanel.console.inject('print("Hello, world")');
+      }, 2000);
     });
     return ncWidget;
   }
