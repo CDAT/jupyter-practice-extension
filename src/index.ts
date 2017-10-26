@@ -46,8 +46,8 @@ export default plugin;
 function activate(app: JupyterLab): void {
   const factory = new NCViewerFactory({
     name: FACTORY,
-    fileTypes: ['nc'],
-    defaultFor: ['nc'],
+    fileTypes: ['NetCDF'],
+    defaultFor: ['NetCDF'],
     readOnly: true
   });
   const tracker = new InstanceTracker<NCDimensionLoaderPanel>({ namespace: 'nc-viewer' });
@@ -59,8 +59,17 @@ function activate(app: JupyterLab): void {
 //     name: widget => widget.context.path
 //   });
 
+  let fileType: DocumentRegistry.IFileType = {
+    name: 'NetCDF',
+    extensions: ['.nc', '.cdf'],
+    mimeTypes: ['application/netcdf'],
+    contentType: 'file',
+    fileFormat: 'base64'
+  };
+  app.docRegistry.addFileType(fileType);
   app.docRegistry.addWidgetFactory(factory);
-  let ft = app.docRegistry.getFileType('nc');
+
+  let ft = app.docRegistry.getFileType('NetCDF');
   factory.widgetCreated.connect((sender, widget) => {
     // Track the widget.
     tracker.add(widget);
