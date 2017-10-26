@@ -8,8 +8,8 @@ import { DropTarget, DragSource } from 'react-dnd';
 import { findDOMNode } from 'react-dom';
 
 import DimensionSlider from './DimensionSlider/DimensionSlider.jsx';
-import FileExplorer from '../FileExplorer/FileExplorer.jsx';
-import DragAndDropTypes from 'constants/DragAndDropTypes';
+//import FileExplorer from '../FileExplorer/FileExplorer.jsx';
+//import DragAndDropTypes from 'constants/DragAndDropTypes';
 
 import './CachedFiles.scss';
 
