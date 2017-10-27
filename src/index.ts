@@ -2,6 +2,10 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
+  CommandRegistry
+} from '@phosphor/commands';
+
+import {
   Widget
 } from '@phosphor/widgets';
 
@@ -40,10 +44,14 @@ const plugin: JupyterLabPlugin<void> = {
 export default plugin;
 
 
+let commands: CommandRegistry;
+
 /**
  * Activate the table widget extension.
  */
 function activate(app: JupyterLab): void {
+  commands = app.commands;
+
   const factory = new NCViewerFactory({
     name: FACTORY,
     fileTypes: ['NetCDF'],
@@ -92,7 +100,18 @@ class NCViewerFactory extends ABCWidgetFactory<NCDimensionLoaderPanel, DocumentR
    * Create a new widget given a context.
    */
   protected createNewWidget(context: DocumentRegistry.Context): NCDimensionLoaderPanel {
-    return new NCDimensionLoaderPanel(context);
+    const ncWidget = new NCDimensionLoaderPanel(context);
+
+    commands.execute('console:create', {
+      activate: true,
+      path: context.path,
+      preferredLanguage: context.model.defaultKernelLanguage
+    }).then(consolePanel => {
+      consolePanel.session.ready.then(() => {
+        consolePanel.console.inject('print("Hello, world")');
+      });
+    });
+    return ncWidget;
   }
 }
 
