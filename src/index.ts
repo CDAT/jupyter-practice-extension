@@ -101,6 +101,7 @@ class NCViewerFactory extends ABCWidgetFactory<NCDimensionLoaderPanel, DocumentR
    */
   protected createNewWidget(context: DocumentRegistry.Context): NCDimensionLoaderPanel {
     const ncWidget = new NCDimensionLoaderPanel(context);
+    debugger;
 
     commands.execute('console:create', {
       activate: true,
@@ -108,7 +109,10 @@ class NCViewerFactory extends ABCWidgetFactory<NCDimensionLoaderPanel, DocumentR
       preferredLanguage: context.model.defaultKernelLanguage
     }).then(consolePanel => {
       consolePanel.session.ready.then(() => {
-        consolePanel.console.inject('print("Hello, world")');
+        consolePanel.console.inject('import cdms2');
+        consolePanel.console.inject('import vcs');
+        consolePanel.console.inject('x=vcs.init()');
+        consolePanel.console.inject('x.plot([1,2,3,4,5,6])');
       });
     });
     return ncWidget;
